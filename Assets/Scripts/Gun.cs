@@ -70,9 +70,18 @@ public class Gun : MonoBehaviour
             Debug.Log(hit.transform.name);
 
             //타켓에서 타켓이 맞으면 데미지가 들어가는 public 코드를 작성 필요
+            if(hit.transform.tag == "Enemy")
+            {
+                hit.transform.GetComponent<Zombie>().decreaseHp((int)damage);
+            }
+            else
+            {
+                Debug.Log("ㅇㅇ");
+            }
 
-            //총알 맞은 이펙트 생성
-            GameObject impactGo = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+
+                //총알 맞은 이펙트 생성
+                GameObject impactGo = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(impactGo, 2f);
         }
 

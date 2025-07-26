@@ -6,6 +6,8 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("플레이어 트랜스폼 지정")]
     [SerializeField] private Transform playerTransform;
+    [Header("플레이어 스테이터스 지정")]
+    [SerializeField] private PlayerStatus playerStatus;
     [Header("적 프리팹 지정")]
     [SerializeField] private GameObject zombiePrefab; // 스폰할 좀비 프리팹
     [Header("스폰 정보 지정")]
@@ -52,7 +54,7 @@ public class EnemySpawner : MonoBehaviour
 
         obj.GetComponent<Zombie>().SetPool(zombiePool);
         //생성된 프리펩에 플레이어 위치 지정
-        obj.GetComponent<Zombie>().SetPlayerTransform(playerTransform);
+        obj.GetComponent<Zombie>().SetPlayerTransform(playerTransform, playerStatus);
 
         return obj;
     }

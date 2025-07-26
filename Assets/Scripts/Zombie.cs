@@ -11,6 +11,7 @@ public class Zombie : MonoBehaviour
     [SerializeField] private Animator anim;
     private NavMeshAgent nav;
     private Transform playerTransform;
+    private PlayerStatus playerStat;
 
     [Header("좀비의 스탯")]
     [SerializeField] int maxHp;
@@ -36,9 +37,10 @@ public class Zombie : MonoBehaviour
         FollowPlayer();
     }
 
-    public void SetPlayerTransform(Transform player)
+    public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
     {
-        playerTransform = player;
+        playerTransform = m_player;
+        playerStat = m_playerStat;
     }
 
     void FollowPlayer()
@@ -74,7 +76,7 @@ public class Zombie : MonoBehaviour
     {
         anim.SetTrigger("Attack");
         Debug.Log("공격!");
-        //플레이어 체력 감소 함수 사용
+        playerStat.decreaseHp(10);
     }
     void Running()
     {
@@ -99,7 +101,6 @@ public class Zombie : MonoBehaviour
 
     public void decreaseHp(int m_damage)
     {
-        
         if(currentHp - m_damage > 0)
             currentHp = -m_damage;
         else
