@@ -1291,7 +1291,9 @@ MonoBehaviour:
   maxHp: 10
   runSpeed: 3
   walkSpeed: 1
-  distanceToRun: 3
+  runRange: 5
+  attackRange: 0.5
+  attackCooldown: 1
 --- !u!1 &5917458392438300855
 GameObject:
   m_ObjectHideFlags: 0
