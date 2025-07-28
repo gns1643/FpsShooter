@@ -24,7 +24,8 @@ public class Zombie : MonoBehaviour
 
     float lastAttackTime = -1f;
     private ObjectPool<GameObject> pool;
-    
+    private bool isDead = false;
+
     void Start()
     {
         currentHp = maxHp;
@@ -34,7 +35,8 @@ public class Zombie : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FollowPlayer();
+        if (!isDead)
+            FollowPlayer();
     }
 
     public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
@@ -96,7 +98,13 @@ public class Zombie : MonoBehaviour
     }
     public void Die()
     { // 좀비 사망시 호출
-        pool.Release(gameObject);
+        isDead = true;
+        nav.isStopped = true;
+        anim.SetTrigger("Dead"); // 죽는 모션 트리거
+    }
+    public void OnDeadAnimationEnd()
+    {
+        pool.Release(gameObject); //죽는 모션이 끝나면 Release
     }
 
     public void decreaseHp(int m_damage)
