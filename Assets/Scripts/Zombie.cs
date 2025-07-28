@@ -1,8 +1,11 @@
 using GLTF.Schema;
+using NUnit.Framework.Constraints;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Zombie : MonoBehaviour
 {
@@ -15,7 +18,7 @@ public class Zombie : MonoBehaviour
 
     [Header("좀비의 스탯")]
     [SerializeField] int maxHp;
-    private int currentHp;
+    public int currentHp;
     [SerializeField] private float runSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runRange;
@@ -24,10 +27,12 @@ public class Zombie : MonoBehaviour
 
     float lastAttackTime = -1f;
     private ObjectPool<GameObject> pool;
-    private bool isDead = false;
 
-    void Start()
+    private bool isDead;
+
+    void OnEnable()
     {
+        isDead = false;
         currentHp = maxHp;
         nav = gameObject.GetComponent<NavMeshAgent>();
     }
@@ -35,8 +40,7 @@ public class Zombie : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isDead)
-            FollowPlayer();
+        FollowPlayer();
     }
 
     public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
@@ -47,12 +51,14 @@ public class Zombie : MonoBehaviour
 
     void FollowPlayer()
     {
+        if (isDead)
+            return;
+
         if (nav != null)
         {
             nav.SetDestination(playerTransform.position);
             //플레이어와의 거리 계산
             float distance = Vector3.Distance(playerTransform.position, transform.position);
-
             //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
             if (distance >= runRange)
                 Running();
@@ -74,11 +80,12 @@ public class Zombie : MonoBehaviour
             Debug.Log("좀비가 쫓을 목표가 없음");
         }
     }
+
     void Attack()
     {
         anim.SetTrigger("Attack");
         Debug.Log("공격!");
-        playerStat.decreaseHp(10);
+        playerStat.TakeDamage(10);
     }
     void Running()
     {
@@ -96,15 +103,15 @@ public class Zombie : MonoBehaviour
     { // 좀비 생성시 호출
         this.pool = pool; 
     }
-    public void Die()
+
+    IEnumerator  Die()
     { // 좀비 사망시 호출
         isDead = true;
-        nav.isStopped = true;
-        anim.SetTrigger("Dead"); // 죽는 모션 트리거
-    }
-    public void OnDeadAnimationEnd()
-    {
-        pool.Release(gameObject); //죽는 모션이 끝나면 Release
+        anim.SetTrigger("Dead");
+
+        yield return new WaitForSeconds(1.5f);
+        
+        pool.Release(gameObject);
     }
 
     public void decreaseHp(int m_damage)
@@ -114,7 +121,7 @@ public class Zombie : MonoBehaviour
         else
         {
             currentHp = 0;
-            Die();
+            StartCoroutine(Die());
         }
     }
 }

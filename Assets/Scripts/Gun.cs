@@ -35,6 +35,7 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.DrawRay(fpsCam.transform.position, fpsCam.transform.forward * range, Color.red);
         if (isReloading || PlayerMove.GetRun())
             return;
 
@@ -67,6 +68,7 @@ public class Gun : MonoBehaviour
 
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
         {
+            
             Debug.Log(hit.transform.name);
 
             //타켓에서 타켓이 맞으면 데미지가 들어가는 public 코드를 작성 필요
@@ -74,14 +76,9 @@ public class Gun : MonoBehaviour
             {
                 hit.transform.GetComponent<Zombie>().decreaseHp((int)damage);
             }
-            else
-            {
-                Debug.Log("ㅇㅇ");
-            }
-
 
                 //총알 맞은 이펙트 생성
-                GameObject impactGo = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            GameObject impactGo = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             Destroy(impactGo, 2f);
         }
 
