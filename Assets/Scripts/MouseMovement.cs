@@ -13,7 +13,7 @@ public class MouseMovement : MonoBehaviour
     void Start()
     {
         //마우스를 게임 중앙 좌표에 고정시키고 마우스커서가 안보이게 하는 기능
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
