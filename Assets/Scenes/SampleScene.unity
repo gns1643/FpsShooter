@@ -1129,8 +1129,6 @@ MonoBehaviour:
   bloodyScreen: {fileID: 402186785}
   DeathAnimator: {fileID: 1075847018}
   WeaponManager: {fileID: 1229374439}
-<<<<<<< Updated upstream
-=======
   theHealthUI: {fileID: 1217444126}
 --- !u!1 &272600373
 GameObject:
@@ -1269,7 +1267,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 272600373}
   m_CullTransparentMesh: 1
->>>>>>> Stashed changes
 --- !u!1 &284579164
 GameObject:
   m_ObjectHideFlags: 0
@@ -8700,8 +8697,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 1d97e705842244b4c8e0cae80a7ae826, type: 2}
-<<<<<<< Updated upstream
-=======
 --- !u!1 &1902671490
 GameObject:
   m_ObjectHideFlags: 0
@@ -8875,7 +8870,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
->>>>>>> Stashed changes
 --- !u!1 &1967622802
 GameObject:
   m_ObjectHideFlags: 0
@@ -9111,11 +9105,8 @@ RectTransform:
   m_Children:
   - {fileID: 210717746}
   - {fileID: 402186786}
-<<<<<<< Updated upstream
-=======
   - {fileID: 1217444125}
   - {fileID: 2119575712}
->>>>>>> Stashed changes
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
