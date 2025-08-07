@@ -24,6 +24,8 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float runRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
+    [SerializeField] private float wallDetectRange = 2.5f; // 좀비가 벽을 인식할 거리
+    private WallStatus targetWall; // 공격 타겟이 벽일 때 저장
 
     float lastAttackTime = -1f;
     private ObjectPool<GameObject> pool;
@@ -40,33 +42,55 @@ public class Zombie : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FollowPlayer();
+        if (isDead)
+            return;
+        targetWall = FindNearbyWall();
+        if (targetWall == null)
+        {   //탐지되는 벽이 없다면
+            FollowPlayer();
+        }
+        else
+        {   //탐지되는 벽이 있다면
+            FollowWall();
+        }
+        
     }
-
-    public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
+    void FollowWall()
     {
-        playerTransform = m_player;
-        playerStat = m_playerStat;
+        float distToWall = Vector3.Distance(transform.position, targetWall.transform.position);
+
+        if (distToWall <= attackRange)
+        {
+            nav.isStopped = true;
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                AttackWall();
+                lastAttackTime = Time.time;
+            }
+        }
+        else
+        {
+            nav.SetDestination(targetWall.transform.position);
+            Walking(); // 또는 달리기
+        }
     }
+    
 
     void FollowPlayer()
     {
-        if (isDead)
-            return;
-
         if (nav != null)
         {
             nav.SetDestination(playerTransform.position);
             //플레이어와의 거리 계산
-            float distance = Vector3.Distance(playerTransform.position, transform.position);
+            float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
             //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
-            if (distance >= runRange)
+            if (distanceToPlayer >= runRange)
                 Running();
-            else if (distance <= attackRange)
+            else if (distanceToPlayer <= attackRange)
             {
                 if (Time.time >= lastAttackTime + attackCooldown)
                 {
-                    Attack(); // 근접 공격 실행
+                    AttackPlayer(); // 근접 공격 실행
                     lastAttackTime = Time.time;
                 }
                 nav.isStopped = true; // 공격 중 이동 정지
@@ -80,8 +104,29 @@ public class Zombie : MonoBehaviour
             Debug.Log("좀비가 쫓을 목표가 없음");
         }
     }
-
-    void Attack()
+    WallStatus FindNearbyWall()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, wallDetectRange);
+        foreach (var hit in hits)
+        {
+            // "Wall" 태그를 가진 오브젝트만 찾음
+            if (hit.CompareTag("Wall"))
+            {
+                WallStatus wall = hit.GetComponent<WallStatus>();
+                if (wall != null && wall.currentHp > 0)
+                    return wall;
+            }
+        }
+        return null;
+    }
+    void AttackWall()
+    {
+        anim.SetTrigger("Attack");
+        Debug.Log("벽 공격!");
+        if (targetWall != null)
+            targetWall.TakeDamage(10);
+    }
+    void AttackPlayer()
     {
         anim.SetTrigger("Attack");
         Debug.Log("공격!");
@@ -123,6 +168,11 @@ public class Zombie : MonoBehaviour
             currentHp = 0;
             StartCoroutine(Die());
         }
+    }
+    public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
+    {
+        playerTransform = m_player;
+        playerStat = m_playerStat;
     }
 }
     
