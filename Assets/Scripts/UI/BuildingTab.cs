@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class Craft
@@ -26,12 +27,17 @@ public class BuildingTab : MonoBehaviour
     private LayerMask layerMask;
     [SerializeField]
     private float range;
+
+    [Header("회전을 위한 변수들")]
+    [SerializeField] private float rotationSpeed = 100f;
+    [SerializeField] private float previewRotationY = 0f;
     public void SlotClick(int _slotNumber)
     {
         go_Preview = Instantiate(craft_wall[_slotNumber].go_PreviewPrefab, tf_Player.position + tf_Player.forward, Quaternion.identity);
         go_Prefab = craft_wall[_slotNumber].go_prefab;
         isPreviewActivated = true;
         Base_UI.SetActive(false);
+        previewRotationY = 0f;
     }
     void Update()
     {
@@ -42,13 +48,25 @@ public class BuildingTab : MonoBehaviour
             
         }
         if (isPreviewActivated)
+        {
             PreviewPositionUpdate();
+            MouseScroll();
+        }
 
         if (Input.GetButtonDown("Fire1"))
             Build();
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Cancel();
+    }
+    void MouseScroll()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0 && go_Preview != null)
+        {
+            previewRotationY += scroll * rotationSpeed;
+            go_Preview.transform.rotation = Quaternion.Euler(0, previewRotationY, 0);
+        }
     }
 
     void OpenWindow()
@@ -82,7 +100,7 @@ public class BuildingTab : MonoBehaviour
         Debug.Log(isPreviewActivated);
         if (isPreviewActivated && go_Preview.GetComponent<PreviewObject>().isBuildable())
         {
-            Instantiate(go_Prefab, hitInfo.point, Quaternion.identity);
+            Instantiate(go_Prefab, hitInfo.point, Quaternion.Euler(0, previewRotationY, 0));
             Destroy(go_Preview);
             isActivated = false;
             isPreviewActivated = false;
