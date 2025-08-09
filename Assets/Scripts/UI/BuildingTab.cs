@@ -31,6 +31,8 @@ public class BuildingTab : MonoBehaviour
     [Header("회전을 위한 변수들")]
     [SerializeField] private float rotationSpeed = 100f;
     [SerializeField] private float previewRotationY = 0f;
+    [Header("탭 전환을 위한 변수들")]
+    [SerializeField] private GameObject[] slotList;
     public void SlotClick(int _slotNumber)
     {
         go_Preview = Instantiate(craft_wall[_slotNumber].go_PreviewPrefab, tf_Player.position + tf_Player.forward, Quaternion.identity);
@@ -38,6 +40,16 @@ public class BuildingTab : MonoBehaviour
         isPreviewActivated = true;
         Base_UI.SetActive(false);
         previewRotationY = 0f;
+    }
+    public void ClickTab(int _tabNum)
+    {
+        //모든 탭 비활성화
+        for (int i = 0; i < slotList.Length; i++)
+        {
+            slotList[i].SetActive(false);
+        }
+        //해당하는 탭 활성화
+        slotList[_tabNum].SetActive(true);
     }
     void Update()
     {
