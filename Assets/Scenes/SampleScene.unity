@@ -7325,7 +7325,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &316582269
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13862,7 +13862,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -14259,6 +14259,9 @@ MonoBehaviour:
   - craftName: Wall03
     go_prefab: {fileID: 8896036942660251688, guid: 5e9b80b0f91dcc747b0aec668ed8ca26, type: 3}
     go_PreviewPrefab: {fileID: 924315897772048785, guid: 4185d24661ac1eb4ca5b057719752f85, type: 3}
+  - craftName: Web
+    go_prefab: {fileID: 3073449389318098145, guid: e93edfa2646ec1e438f41c0099eca467, type: 3}
+    go_PreviewPrefab: {fileID: 3073449389318098145, guid: 04461ede55d05824f8fb28bd401ea3f8, type: 3}
   layerMask:
     serializedVersion: 2
     m_Bits: 8

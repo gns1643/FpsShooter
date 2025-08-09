@@ -27,10 +27,13 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float wallDetectRange = 2.5f; // 좀비가 벽을 인식할 거리
     private WallStatus targetWall; // 공격 타겟이 벽일 때 저장
 
+    bool isRunning = true;
     float lastAttackTime = -1f;
     private ObjectPool<GameObject> pool;
 
     private bool isDead;
+
+    private float slowMultiplier = 1f;
 
     void OnEnable()
     {
@@ -134,15 +137,24 @@ public class Zombie : MonoBehaviour
     }
     void Running()
     {
-        nav.isStopped = false;
-        anim.SetBool("Running", true);
-        nav.speed = runSpeed;
+        if (!isRunning)
+        {
+            isRunning = true;
+            nav.isStopped = false;
+            anim.SetBool("Running", true);
+            nav.speed = runSpeed;
+        }
+        
     }
     void Walking()
     {
-        nav.isStopped = false;
-        anim.SetBool("Running", false);
-        nav.speed = walkSpeed;
+        if (isRunning)
+        {
+            isRunning = false;
+            nav.isStopped = false;
+            nav.speed = walkSpeed;
+            anim.SetBool("Running", false);
+        }
     }
     public void SetPool(ObjectPool<GameObject> pool) 
     { // 좀비 생성시 호출
@@ -174,5 +186,27 @@ public class Zombie : MonoBehaviour
         playerTransform = m_player;
         playerStat = m_playerStat;
     }
+    // ★ 감속 배수를 변경 (거미줄 등 느려지는 효과 적용)
+    public void SlowDown(float multiplier)
+    {
+        slowMultiplier = multiplier;
+        if (isRunning) ApplySpeed(runSpeed);
+        else ApplySpeed(walkSpeed);
+    }
+
+    // ★ 원래 속도로 복원
+    public void RestoreSpeed()
+    {
+        slowMultiplier = 1f;
+        if (isRunning) ApplySpeed(runSpeed);
+        else ApplySpeed(walkSpeed);
+    }
+
+    // ★ 기본 속도에 감속 배수 적용
+    private void ApplySpeed(float baseSpeed)
+    {
+        nav.speed = baseSpeed * slowMultiplier;
+    }
+
+
 }
-    
