@@ -140,6 +140,11 @@ public class BuildingTab : MonoBehaviour
         craft_slot[_slotNum].count = _count;
         UpdateSlotUI(_slotNum);
     }
+    public void AddSlot(int _slotNum, int _count)
+    {
+        craft_slot[_slotNum].count += _count;
+        UpdateSlotUI(_slotNum);
+    }
     public void SlotClick(int _slotNumber)
     {
         if (craft_slot[_slotNumber].count <= 0)
