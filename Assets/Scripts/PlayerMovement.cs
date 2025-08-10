@@ -34,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.canPlayerMove)
+            return;
         //점프중인지 확인
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 

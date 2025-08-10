@@ -11,7 +11,6 @@ public class Craft
 
 public class BuildingTab : MonoBehaviour
 {
-    private bool isActivated = false;
     private bool isPreviewActivated = false; // 미리 보기 활성화 상태
     [Header("필요한 컴포넌트들")]
     [SerializeField] private GameObject Base_UI;
@@ -83,14 +82,14 @@ public class BuildingTab : MonoBehaviour
 
     void OpenWindow()
     {
-        if (!isActivated)
+        if (!GameManager.isOpenCraftMenu)
         {
-            isActivated = true;
+            GameManager.isOpenCraftMenu = true;
             Base_UI.SetActive(true);
         }
         else
         {
-            isActivated = false;
+            GameManager.isOpenCraftMenu = false;
             Base_UI.SetActive(false);
         }
             
@@ -114,7 +113,7 @@ public class BuildingTab : MonoBehaviour
         {
             Instantiate(go_Prefab, hitInfo.point, Quaternion.Euler(0, previewRotationY, 0));
             Destroy(go_Preview);
-            isActivated = false;
+            GameManager.isOpenCraftMenu = false;
             isPreviewActivated = false;
             go_Preview = null;
             go_Prefab = null;
@@ -125,7 +124,7 @@ public class BuildingTab : MonoBehaviour
         if (isPreviewActivated)
             Destroy(go_Preview);
 
-        isActivated = false;
+        GameManager.isOpenCraftMenu = false;
         isPreviewActivated = false;
 
         go_Preview = null;
