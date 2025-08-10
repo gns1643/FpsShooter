@@ -19,7 +19,7 @@ public class MouseMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.canPlayerMove)
+        if (GameManager.canPlayerMove || GameManager.isPreviewActivated)
         {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;

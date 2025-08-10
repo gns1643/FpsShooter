@@ -4,6 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static bool canPlayerMove = true; //플레이어의 움직임 제어
     public static bool isOpenCraftMenu = false; //건축 메뉴 활성화 여부
+    public static bool isPreviewActivated = false; //건축 프리뷰 활성화 여부
 
     void Start()
     {
