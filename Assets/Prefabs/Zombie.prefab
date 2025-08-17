@@ -1152,9 +1152,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6281204763657852226}
   - component: {fileID: 6784581628995617042}
+  - component: {fileID: 6321063305502491456}
   - component: {fileID: 1502399804832162869}
   - component: {fileID: 5895469914635824677}
-  - component: {fileID: 6321063305502491456}
   - component: {fileID: 511204791005159403}
   m_Layer: 0
   m_Name: Zombie
@@ -1202,6 +1202,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6321063305502491456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5850336968266074918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcfb89d6b2f2a6841a58f9deb40b5a99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 6784581628995617042}
+  maxHp: 10
+  money: 50
+  currentHp: 0
+  runSpeed: 3
+  walkSpeed: 1
+  runRange: 8
+  attackRange: 1.2
+  attackCooldown: 1
 --- !u!136 &1502399804832162869
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1247,27 +1268,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6321063305502491456
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5850336968266074918}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcfb89d6b2f2a6841a58f9deb40b5a99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 6784581628995617042}
-  maxHp: 10
-  currentHp: 0
-  runSpeed: 3
-  walkSpeed: 1
-  runRange: 8
-  attackRange: 1.2
-  attackCooldown: 1
-  wallDetectRange: 2.5
 --- !u!54 &511204791005159403
 Rigidbody:
   m_ObjectHideFlags: 0

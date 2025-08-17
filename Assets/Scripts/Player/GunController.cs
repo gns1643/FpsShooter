@@ -32,7 +32,9 @@ public class GunController : MonoBehaviour
 
     void Update()
     {
-         if(GameManager.isOpenShopMenu || GameManager.isPreviewActivated)
+        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * currentGun.range, Color.red);
+
+        if (GameManager.isOpenShopMenu || GameManager.isPreviewActivated || GameManager.isPlayerDead || GameManager.isPause)
             { return; }
 
         if (isActivate)

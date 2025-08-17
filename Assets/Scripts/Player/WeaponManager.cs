@@ -46,6 +46,9 @@ public class WeaponManager : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.isPlayerDead || GameManager.isPause)
+            return;
+
         if (!isChangeWeapon)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1) && currentWeapons[0] != null)

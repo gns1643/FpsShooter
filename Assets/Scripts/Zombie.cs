@@ -18,26 +18,34 @@ public class Zombie : MonoBehaviour
 
     [Header("좀비의 스탯")]
     [SerializeField] int maxHp;
+    [SerializeField] private int money; //좀비가 죽으면 주는 돈
     public int currentHp;
     [SerializeField] private float runSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
-    [SerializeField] private float wallDetectRange = 2.5f; // 좀비가 벽을 인식할 거리
-    private WallStatus targetWall; // 공격 타겟이 벽일 때 저장
 
-    bool isRunning = true;
+    private CapsuleCollider zombieCollider;
+    private RaycastHit hit;
+
+    bool isRunning = false;
+    bool isAttack = false;
     float lastAttackTime = -1f;
     private ObjectPool<GameObject> pool;
 
     private bool isDead;
 
     private float slowMultiplier = 1f;
+    void Awake()
+    {
+        zombieCollider = gameObject.GetComponent<CapsuleCollider>();
+    }
 
     void OnEnable()
     {
         isDead = false;
+        zombieCollider.enabled = true;
         currentHp = maxHp;
         nav = gameObject.GetComponent<NavMeshAgent>();
     }
@@ -45,117 +53,105 @@ public class Zombie : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isDead)
+        if(isDead)
             return;
-        targetWall = FindNearbyWall();
-        if (targetWall == null)
-        {   //탐지되는 벽이 없다면
-            FollowPlayer();
-        }
-        else
-        {   //탐지되는 벽이 있다면
-            FollowWall();
-        }
+
+        Debug.DrawRay(transform.position+ new Vector3(0f, 1.5f, 0f) , transform.forward * attackRange, Color.red);
+
+        TryAttack();
+        FollowPlayer();
         
     }
-    void FollowWall()
-    {
-        float distToWall = Vector3.Distance(transform.position, targetWall.transform.position);
-
-        if (distToWall <= attackRange)
-        {
-            nav.isStopped = true;
-            if (Time.time >= lastAttackTime + attackCooldown)
-            {
-                AttackWall();
-                lastAttackTime = Time.time;
-            }
-        }
-        else
-        {
-            nav.SetDestination(targetWall.transform.position);
-            Walking(); // 또는 달리기
-        }
-    }
-    
+  
 
     void FollowPlayer()
     {
         if (nav != null)
         {
+            if (isAttack)
+                return;
+
             nav.SetDestination(playerTransform.position);
             //플레이어와의 거리 계산
             float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
+
             //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
             if (distanceToPlayer >= runRange)
                 Running();
-            else if (distanceToPlayer <= attackRange)
-            {
-                if (Time.time >= lastAttackTime + attackCooldown)
-                {
-                    AttackPlayer(); // 근접 공격 실행
-                    lastAttackTime = Time.time;
-                }
-                nav.isStopped = true; // 공격 중 이동 정지
-            }
             else
                 Walking();
-
         }
         else
         {
             Debug.Log("좀비가 쫓을 목표가 없음");
         }
     }
-    WallStatus FindNearbyWall()
+
+    private void TryAttack()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, wallDetectRange);
-        foreach (var hit in hits)
+        if(Physics.Raycast(transform.position + new Vector3(0f, 1.5f, 0f), transform.forward, out hit, attackRange))
         {
-            // "Wall" 태그를 가진 오브젝트만 찾음
-            if (hit.CompareTag("Wall"))
+
+            if (hit.transform.tag == "Wall" || hit.transform.tag == "Player")
             {
-                WallStatus wall = hit.GetComponent<WallStatus>();
-                if (wall != null && wall.currentHp > 0)
-                    return wall;
+                isAttack = true;
+
+                if (Time.time >= lastAttackTime + attackCooldown)
+                {
+                    anim.SetTrigger("Attack");
+
+                    if (hit.transform.tag == "Wall")
+                    {
+                        hit.transform.GetComponent<WallStatus>().TakeDamage(10);
+                    }
+                    else if (hit.transform.tag == "Player")
+                    {
+                        //플레이어가 죽지 않았으면 데미지를 준다.
+                        if(!GameManager.isPlayerDead)
+                             playerStat.TakeDamage(10);
+                    }
+
+                    lastAttackTime = Time.time;
+                }
+
+                nav.isStopped = true; // 공격 중 이동 정지
+            }
+            //감지했어도 wall이나 palyer가 아니었을 경우
+            else
+            {
+                isAttack = false;
             }
         }
-        return null;
+        //감지를 못했을 경우
+        else
+        {
+            isAttack = false;
+        }
+
     }
-    void AttackWall()
-    {
-        anim.SetTrigger("Attack");
-        Debug.Log("벽 공격!");
-        if (targetWall != null)
-            targetWall.TakeDamage(10);
-    }
-    void AttackPlayer()
-    {
-        anim.SetTrigger("Attack");
-        Debug.Log("공격!");
-        playerStat.TakeDamage(10);
-    }
+
     void Running()
     {
         if (!isRunning)
         {
             isRunning = true;
-            nav.isStopped = false;
             anim.SetBool("Running", true);
-            nav.speed = runSpeed;
         }
-        
+        nav.isStopped = false;
+        nav.speed = runSpeed;
     }
     void Walking()
     {
         if (isRunning)
         {
             isRunning = false;
-            nav.isStopped = false;
-            nav.speed = walkSpeed;
             anim.SetBool("Running", false);
         }
+        nav.isStopped = false;
+        nav.speed = walkSpeed;
+
     }
+
     public void SetPool(ObjectPool<GameObject> pool) 
     { // 좀비 생성시 호출
         this.pool = pool; 
@@ -164,7 +160,10 @@ public class Zombie : MonoBehaviour
     IEnumerator  Die()
     { // 좀비 사망시 호출
         isDead = true;
+        zombieCollider.enabled = false;
+        nav.isStopped = true;
         anim.SetTrigger("Dead");
+        GameManager.AddMoney(money);
 
         yield return new WaitForSeconds(1.5f);
         
@@ -181,11 +180,13 @@ public class Zombie : MonoBehaviour
             StartCoroutine(Die());
         }
     }
+
     public void SetPlayerTransform(Transform m_player, PlayerStatus m_playerStat)
     {
         playerTransform = m_player;
         playerStat = m_playerStat;
     }
+    
     // ★ 감속 배수를 변경 (거미줄 등 느려지는 효과 적용)
     public void SlowDown(float multiplier)
     {

@@ -35,8 +35,8 @@ public class EnemySpawner : MonoBehaviour
     }
     void Start()
     {
-        //var zombie = zombiePool.Get();
-        spawnCoroutine = StartCoroutine(SpawnWave());
+        var zombie = zombiePool.Get();
+        //spawnCoroutine = StartCoroutine(SpawnWave());
     }
 
     IEnumerator SpawnWave()

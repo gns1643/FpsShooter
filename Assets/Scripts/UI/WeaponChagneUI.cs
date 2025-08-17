@@ -39,13 +39,19 @@ public class WeaponChangeUI : MonoBehaviour
     {
         for (int i = 0; i < weapon_slot_Image.Length; i++)
         {
+            // 슬롯에 무기가 없다면
             if (theWeaponManager.currentWeapons[i] == null)
             {
-                weapon_slot_Image[i].GetComponent<Image>().enabled = false;
+                //켜져있으면 끈다.
+                if (weapon_slot_Image[i].GetComponent<Image>().enabled)
+                     weapon_slot_Image[i].GetComponent<Image>().enabled = false;
             }
+            // 슬롯에 무기가 있다면
             else
             {
-                weapon_slot_Image[i].GetComponent<Image>().enabled = true;
+                //꺼져있으면 킨다.
+                if (!weapon_slot_Image[i].GetComponent<Image>().enabled)
+                    weapon_slot_Image[i].GetComponent<Image>().enabled = true;
                 weapon_slot_Image[i].GetComponent<Image>().sprite = theWeaponManager.currentWeapons[i].GetComponent<Gun>().gunImage;
             }
         }

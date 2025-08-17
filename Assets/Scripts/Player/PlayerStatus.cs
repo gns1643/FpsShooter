@@ -12,10 +12,13 @@ public class PlayerStatus : MonoBehaviour
     public GameObject bloodyScreen;
 
     public Animator DeathAnimator;
-    public GameObject WeaponManager;
+    public GameObject GunController;
 
     public HUD theHealthUI;
+    public GameObject gameOverUI;
+    public GameObject restartButton;
 
+    private bool isBlood;
     //나중에 추가
 
     void Start()
@@ -24,27 +27,29 @@ public class PlayerStatus : MonoBehaviour
         theHealthUI.HpUpdate();
     }
     
+    //죽으면 데미지를 더이상 받지 않음
     public void TakeDamage(int m_damage)
     {
-        //
         if (currentHp - m_damage > 0)
         {
-            StartCoroutine(BloodyScreenEffect());
+            if(!isBlood)
+                StartCoroutine(BloodyScreenEffect());
             currentHp -= m_damage;
             theHealthUI.HpUpdate();
-            Debug.Log(currentHp);
         }
         else
         {
+            GameManager.isPlayerDead = true;
             currentHp = 0; 
             theHealthUI.HpUpdate();
             PlayerDie();
-            Debug.Log("사망함");
         }
     }
 
     private IEnumerator BloodyScreenEffect()
     {
+        isBlood = true;
+
         if(bloodyScreen.activeInHierarchy == false)
         {
             bloodyScreen.SetActive(true);
@@ -56,7 +61,7 @@ public class PlayerStatus : MonoBehaviour
         startColor.a = 1f;
         image.color = startColor;
 
-        float duration = 2f;
+        float duration = 0.7f;
         float elapsedTime = 0f;
 
         while (elapsedTime < duration) 
@@ -74,18 +79,29 @@ public class PlayerStatus : MonoBehaviour
 
         if(bloodyScreen.activeInHierarchy)
         {
+         
             bloodyScreen.SetActive(false);
         }
+
+        isBlood = false;
     }
 
-    private void PlayerDie()
+     private void PlayerDie()
     {
         GetComponent<MouseMovement>().enabled = false;
         GetComponent<PlayerMovement>().enabled = false;
 
-        WeaponManager.SetActive(true);
         DeathAnimator.enabled = true;
+
+        GetComponent<ScreenFader>().StartFade();
+        StartCoroutine(ShowGameOverUI());
     }
 
+     private IEnumerator ShowGameOverUI()
+    {
+        yield return new WaitForSeconds(1f);
+        gameOverUI.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+    }
 
 }

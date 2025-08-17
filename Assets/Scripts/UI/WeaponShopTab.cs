@@ -3,14 +3,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class Weapon
+{
+    public string WeaponName; // 이름
+    public GameObject shopWeaponPrefab; //무기 프리펩
+    public RectTransform weapon_Buy_Button; //무기 구매 버튼                           
+    public int shopWeaponMoney; //무기 가격
+}
+
 public class WeaponShopTab : MonoBehaviour
 {
     //무기 교체 UI
     [SerializeField] private GameObject weapon_Change_UI;
-    //상점 무기 버튼
-    [SerializeField] private RectTransform[] weapon_Buy_Button;
-    //상점에서 판매하는 무기 프리펩
-    [SerializeField] private GameObject[] shopWeaponPrefab;
+    // 상점에서 판매하는 무기들
+    [SerializeField] private Weapon[] weapons;
 
     //구매 버튼을 클릭한 무기 프리펩
     private GameObject buyWeaponPrefab;
@@ -35,21 +42,28 @@ public class WeaponShopTab : MonoBehaviour
         }
         else
         {
-            // 이부분에 player돈 과 관련한 조건문을 걸어서 player돈 이상이면 아래코드를 실행하고 아니면 돈 부족이라고 뜸
+            int slotIndex;
+            //구매할 무기 찾기
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (buyWeaponName == weapons[i].WeaponName)
+                {
+                    slotIndex = i;
 
-            //구매할 무기 프리펩과 버튼이 몇 번째 슬롯에 있는지 찾기
-            BuyWeaponType buyWeaponType;
-            Enum.TryParse(buyWeaponName, out buyWeaponType);
-            int slotIndex = (int)buyWeaponType;
+                    // 이부분에 player돈 과 관련한 조건문을 걸어서 player돈 이상이면 아래코드를 실행하고 아니면 돈 부족이라고 뜸
+                    if (GameManager.UseMoney(weapons[slotIndex].shopWeaponMoney))
+                    {
+                        //구매할 무기 프리펩 가져오기
+                        buyWeaponPrefab = weapons[slotIndex].shopWeaponPrefab;
+                        //클릭한 구매 버튼을 가져오기
+                        weapon_Change_UI.GetComponent<WeaponChangeUI>().click_Weapon_Buy_Button = weapons[slotIndex].weapon_Buy_Button;
+                        //무기교체UI 켜주기
+                        weapon_Change_UI.SetActive(true);
+                    }
 
-            //구매할 무기 프리펩 가져오기
-            buyWeaponPrefab = shopWeaponPrefab[slotIndex];
-
-            //클릭한 구매 버튼을 가져오기
-            weapon_Change_UI.GetComponent<WeaponChangeUI>().click_Weapon_Buy_Button = weapon_Buy_Button[slotIndex];
-
-            //무기교체UI 켜주기
-            weapon_Change_UI.SetActive(true);
+                    return;
+                }
+            }
         }
 
     }
