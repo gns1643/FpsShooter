@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,10 +6,10 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController theCharacterController;
 
-    public float walkSpeed = 4f;
-    public float runSpeed = 12f;
+    public float walkSpeed;
+    public float runSpeed;
     public float gravity = -9.81f;
-    public float jumpHeight = 2f;
+    public float jumpHeight = 1.5f;
     private float applySpeed;
 
     public Transform groundCheck;
@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
 
     Vector3 velocity;
+    Vector3 lastPosition = new Vector3(0f,0f,0f);
 
     bool isGrounded;
     bool isRun = false;
@@ -66,7 +67,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
 
         theCharacterController.Move(move * applySpeed * Time.deltaTime);
-
       
     }
 

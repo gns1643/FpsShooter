@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 655148478688981523}
   - component: {fileID: 8377917072951637994}
   m_Layer: 0
-  m_Name: Web
+  m_Name: web
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,4 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e69c14701efbeb4c920c241721bb4a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slowSpeed: 0.5
+  slowSpeed: 0.3

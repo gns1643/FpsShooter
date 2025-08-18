@@ -224,7 +224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9104600365789661834
 Transform:
   m_ObjectHideFlags: 0
@@ -6008,13 +6008,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponType: GUN
-  gunImage: {fileID: 21300024, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
+  WeaponName: carbine
+  gunImage: {fileID: 21300046, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
   damage: 10
-  range: 100
-  fireRate: 15
+  range: 30
+  fireRate: 0.08
   reloadBulletCount: 30
   currentBulletCount: 0
   carryBulletCount: 120
+  maxBulletCount: 120
   reloadTime: 2.05
   originPos: {x: 0, y: -0.097, z: 0}
   muzzleFlash: {fileID: 340963709093927036}

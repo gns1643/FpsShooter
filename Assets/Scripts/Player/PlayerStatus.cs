@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +14,8 @@ public class PlayerStatus : MonoBehaviour
     public GameObject GunController;
 
     public HUD theHealthUI;
-    public GameObject gameOverUI;
+    public GameObject deadUI;
+    public GameObject winUI;
     public GameObject restartButton;
 
     private bool isBlood;
@@ -93,15 +93,31 @@ public class PlayerStatus : MonoBehaviour
 
         DeathAnimator.enabled = true;
 
+        SoundManager.instance.StopAllSE();
+
         GetComponent<ScreenFader>().StartFade();
         StartCoroutine(ShowGameOverUI());
     }
 
-     private IEnumerator ShowGameOverUI()
+    private IEnumerator ShowGameOverUI()
     {
         yield return new WaitForSeconds(1f);
-        gameOverUI.gameObject.SetActive(true);
+
+        deadUI.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
     }
+
+    public void GameEnd()
+    {
+        GameManager.isPlayerDead = true;
+
+        GetComponent<MouseMovement>().enabled = false;
+        GetComponent<PlayerMovement>().enabled = false;
+
+        winUI.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+
+    }
+ 
 
 }

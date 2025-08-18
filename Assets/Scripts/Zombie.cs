@@ -1,53 +1,64 @@
-using GLTF.Schema;
-using NUnit.Framework.Constraints;
+
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class Zombie : MonoBehaviour
 {
-
     [Header("필요한 컴포넌트들")]
     [SerializeField] private Animator anim;
     private NavMeshAgent nav;
-    private Transform playerTransform;
+    private CapsuleCollider zombieCollider;
+    private AudioSource theAudio;
+
+    [Header("플레이어 컴포넌트(스포너에서 소환시 자동 지정)")]
+    [SerializeField] private Transform playerTransform;
     private PlayerStatus playerStat;
 
     [Header("좀비의 스탯")]
-    [SerializeField] int maxHp;
-    [SerializeField] private int money; //좀비가 죽으면 주는 돈
+    public int maxHp;
     public int currentHp;
     [SerializeField] private float runSpeed;
     [SerializeField] private float walkSpeed;
+    public float applySpeed;
     [SerializeField] private float runRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
+    [SerializeField] private int money; //좀비가 죽으면 주는 돈
+    [SerializeField] private int zombieDamage;
+    [SerializeField] private bool IsCopZombie;
 
-    private CapsuleCollider zombieCollider;
-    private RaycastHit hit;
+    [Header("좀비의 사운드")]
+    [SerializeField] private AudioClip sound_zombie_attack;
+    [SerializeField] private AudioClip sound_zombie_Dead;
+    [SerializeField] private AudioClip sound_zombie_normal;
 
     bool isRunning = false;
-    bool isAttack = false;
+    bool isSlowDown;
+    bool isAttack;
     float lastAttackTime = -1f;
+    private RaycastHit hit;
     private ObjectPool<GameObject> pool;
 
     private bool isDead;
 
     private float slowMultiplier = 1f;
+
     void Awake()
     {
+        theAudio = GetComponent<AudioSource>();
         zombieCollider = gameObject.GetComponent<CapsuleCollider>();
+        nav = gameObject.GetComponent<NavMeshAgent>();
     }
 
     void OnEnable()
     {
+        isSlowDown = false;
         isDead = false;
+        isAttack = false;
         zombieCollider.enabled = true;
         currentHp = maxHp;
-        nav = gameObject.GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -60,30 +71,34 @@ public class Zombie : MonoBehaviour
 
         TryAttack();
         FollowPlayer();
-        
     }
   
 
     void FollowPlayer()
     {
-        if (nav != null)
+        if (nav != null && nav.enabled && nav.isOnNavMesh)
         {
             if (isAttack)
                 return;
 
             nav.SetDestination(playerTransform.position);
-            //플레이어와의 거리 계산
-            float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
 
-            //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
-            if (distanceToPlayer >= runRange)
-                Running();
-            else
+            if (IsCopZombie)
                 Walking();
-        }
-        else
-        {
-            Debug.Log("좀비가 쫓을 목표가 없음");
+
+            else
+            {
+                //플레이어와의 거리 계산
+                float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
+
+                //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
+                if (distanceToPlayer >= runRange)
+                    Running();
+                else
+                    Walking();
+            }
+
+            nav.speed = applySpeed;
         }
     }
 
@@ -94,62 +109,76 @@ public class Zombie : MonoBehaviour
 
             if (hit.transform.tag == "Wall" || hit.transform.tag == "Player")
             {
-                isAttack = true;
+                if(!isAttack)
+                    isAttack = true;
+
+                nav.isStopped = true;
 
                 if (Time.time >= lastAttackTime + attackCooldown)
                 {
+                    PlaySE(sound_zombie_attack);
                     anim.SetTrigger("Attack");
-
-                    if (hit.transform.tag == "Wall")
-                    {
-                        hit.transform.GetComponent<WallStatus>().TakeDamage(10);
-                    }
-                    else if (hit.transform.tag == "Player")
-                    {
-                        //플레이어가 죽지 않았으면 데미지를 준다.
-                        if(!GameManager.isPlayerDead)
-                             playerStat.TakeDamage(10);
-                    }
 
                     lastAttackTime = Time.time;
                 }
-
-                nav.isStopped = true; // 공격 중 이동 정지
             }
-            //감지했어도 wall이나 palyer가 아니었을 경우
-            else
-            {
-                isAttack = false;
-            }
+           
         }
-        //감지를 못했을 경우
-        else
+
+    }
+
+    public void Attack()
+    {
+        //플레이어가 움직여 공격을 피한경우
+        if(hit.transform == null)
         {
-            isAttack = false;
+            Debug.Log("공격이 빗나갔다");
+            return;
         }
 
+        if (hit.transform.tag == "Wall")
+        {
+            hit.transform.GetComponent<WallStatus>().TakeDamage(zombieDamage);
+        }
+        else if (hit.transform.tag == "Player")
+        {
+            //플레이어가 죽지 않았으면 데미지를 준다.
+            if (!GameManager.isPlayerDead)
+                playerStat.TakeDamage(zombieDamage);
+        }
+        
+    }
+    
+
+    public void FinishAttack()
+    {
+        isAttack = false;
     }
 
     void Running()
     {
-        if (!isRunning)
+        if (!isRunning && !IsCopZombie)
         {
             isRunning = true;
             anim.SetBool("Running", true);
         }
+
         nav.isStopped = false;
-        nav.speed = runSpeed;
+
+        if(!isSlowDown)
+        applySpeed = runSpeed;
     }
     void Walking()
     {
-        if (isRunning)
+        if (isRunning&& !IsCopZombie)
         {
             isRunning = false;
             anim.SetBool("Running", false);
         }
         nav.isStopped = false;
-        nav.speed = walkSpeed;
 
+        if (!isSlowDown)
+        applySpeed = walkSpeed;
     }
 
     public void SetPool(ObjectPool<GameObject> pool) 
@@ -162,8 +191,13 @@ public class Zombie : MonoBehaviour
         isDead = true;
         zombieCollider.enabled = false;
         nav.isStopped = true;
+
+        PlaySE(sound_zombie_Dead);
         anim.SetTrigger("Dead");
         GameManager.AddMoney(money);
+
+        WaveManager.Instance.OnZombieKilled();
+        WaveManager.Instance.PrintZombieCount(); //디버그용
 
         yield return new WaitForSeconds(1.5f);
         
@@ -190,24 +224,30 @@ public class Zombie : MonoBehaviour
     // ★ 감속 배수를 변경 (거미줄 등 느려지는 효과 적용)
     public void SlowDown(float multiplier)
     {
+        Debug.Log("실행");
+        isSlowDown = true;
         slowMultiplier = multiplier;
-        if (isRunning) ApplySpeed(runSpeed);
-        else ApplySpeed(walkSpeed);
+        ApplySpeed(applySpeed);
     }
 
     // ★ 원래 속도로 복원
     public void RestoreSpeed()
     {
         slowMultiplier = 1f;
-        if (isRunning) ApplySpeed(runSpeed);
-        else ApplySpeed(walkSpeed);
+        ApplySpeed(applySpeed);
+        isSlowDown = false;
     }
 
     // ★ 기본 속도에 감속 배수 적용
     private void ApplySpeed(float baseSpeed)
     {
-        nav.speed = baseSpeed * slowMultiplier;
+        Debug.Log("Success");
+        applySpeed = baseSpeed * slowMultiplier;
     }
 
-
+    private void PlaySE(AudioClip clip)
+    {
+        theAudio.clip = clip;
+        theAudio.Play();
+    }
 }

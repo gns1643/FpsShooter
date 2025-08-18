@@ -11,8 +11,10 @@ public class WallStatus : MonoBehaviour
 
     public void TakeDamage(int m_damage)
     {
+
         if (currentHp - m_damage > 0)
         {
+            Debug.Log("º®°ø°Ý");
             currentHp -= m_damage;
         }
         else

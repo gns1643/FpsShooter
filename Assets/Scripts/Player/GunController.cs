@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GunController : MonoBehaviour
@@ -43,7 +41,7 @@ public class GunController : MonoBehaviour
             {
                 if (Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire && !isReload)
                 {
-                    nextTimeToFire = Time.time + 1f / currentGun.fireRate;
+                    nextTimeToFire = Time.time + currentGun.fireRate;
                     Fire();
                 }
 
@@ -68,7 +66,16 @@ public class GunController : MonoBehaviour
         if (currentGun.currentBulletCount > 0)
         { 
              currentGun.muzzleFlash.Play();
-             currentGun.anim.SetTrigger("Fire");
+
+            //사운드 재생
+            if(currentGun.WeaponName == "shotgun")
+             SoundManager.instance.PlaySE("ShotGunFire");
+            else if(currentGun.WeaponName == "pistol")
+                SoundManager.instance.PlaySE("PistolFire");
+            else
+                SoundManager.instance.PlaySE("GunFire");
+
+            currentGun.anim.SetTrigger("Fire");
 
              //쏘면 총알 감소
              currentGun.currentBulletCount--;
@@ -113,6 +120,7 @@ public class GunController : MonoBehaviour
         {
             isReload = true;
 
+            SoundManager.instance.PlaySE("Reload");
             currentGun.anim.SetTrigger("Reload");
 
             currentGun.carryBulletCount += currentGun.currentBulletCount;

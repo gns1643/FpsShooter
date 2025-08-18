@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class SpiderWeb : MonoBehaviour
 {
     [Header("감소할 스피드 배수")]
-    [SerializeField] private float slowSpeed = 0.5f;
+    [SerializeField] private float slowSpeed = 0.3f;
 
     private void OnTriggerEnter(Collider other)
     {
