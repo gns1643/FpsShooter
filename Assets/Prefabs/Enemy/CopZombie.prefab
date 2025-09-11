@@ -820,15 +820,14 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   maxHp: 30
   currentHp: 0
-  runSpeed: 0
-  walkSpeed: 8
+  runSpeed: 8
+  walkSpeed: 1
   applySpeed: 0
   runRange: 9
   attackRange: 1.2
   attackCooldown: 1.18
   money: 40
   zombieDamage: 20
-  IsCopZombie: 1
   sound_zombie_attack: {fileID: 8300000, guid: 12ab38a42fd3fe6479599419f6c29aa2, type: 3}
   sound_zombie_Dead: {fileID: 8300000, guid: 035629cc228c6d94e81a2ccd1a297aac, type: 3}
   sound_zombie_normal: {fileID: 8300000, guid: 134ec7590d08fc24bbd319c4132e337e, type: 3}

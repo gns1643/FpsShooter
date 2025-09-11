@@ -20,14 +20,12 @@ public class Zombie : MonoBehaviour
     public int maxHp;
     public int currentHp;
     [SerializeField] private float runSpeed;
-    [SerializeField] private float walkSpeed;
     public float applySpeed;
     [SerializeField] private float runRange;
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
     [SerializeField] private int money; //좀비가 죽으면 주는 돈
     [SerializeField] private int zombieDamage;
-    [SerializeField] private bool IsCopZombie;
 
     [Header("좀비의 사운드")]
     [SerializeField] private AudioClip sound_zombie_attack;
@@ -83,21 +81,7 @@ public class Zombie : MonoBehaviour
 
             nav.SetDestination(playerTransform.position);
 
-            if (IsCopZombie)
-                Walking();
-
-            else
-            {
-                //플레이어와의 거리 계산
-                float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
-
-                //플레이어와의 거리에따라 뛰기, 공격, 걷기 전환
-                if (distanceToPlayer >= runRange)
-                    Running();
-                else
-                    Walking();
-            }
-
+            Running();
             nav.speed = applySpeed;
         }
     }
@@ -157,30 +141,14 @@ public class Zombie : MonoBehaviour
 
     void Running()
     {
-        if (!isRunning && !IsCopZombie)
-        {
-            isRunning = true;
-            anim.SetBool("Running", true);
-        }
+        isRunning = true;
+        anim.SetBool("Running", true);
 
         nav.isStopped = false;
 
         if(!isSlowDown)
         applySpeed = runSpeed;
     }
-    void Walking()
-    {
-        if (isRunning&& !IsCopZombie)
-        {
-            isRunning = false;
-            anim.SetBool("Running", false);
-        }
-        nav.isStopped = false;
-
-        if (!isSlowDown)
-        applySpeed = walkSpeed;
-    }
-
     public void SetPool(ObjectPool<GameObject> pool) 
     { // 좀비 생성시 호출
         this.pool = pool; 
