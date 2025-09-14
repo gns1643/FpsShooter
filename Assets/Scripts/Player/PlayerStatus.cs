@@ -8,6 +8,9 @@ public class PlayerStatus : MonoBehaviour
     public int currentHp;
     public int maxHp = 100;
 
+    public int currentShield;
+    public int maxShield = 50;
+
     public GameObject bloodyScreen;
 
     public Animator DeathAnimator;
@@ -23,11 +26,29 @@ public class PlayerStatus : MonoBehaviour
 
     void Start()
     {
+        currentShield = maxShield;
         currentHp = maxHp;
         theHealthUI.HpUpdate();
+        theHealthUI.ShieldUpdate();
     }
     
-    //죽으면 데미지를 더이상 받지 않음
+    public void ShieldDamage(int m_damage)
+    {
+        if (currentShield - m_damage >= 0)
+        {
+            currentShield -= m_damage;
+            theHealthUI.ShieldUpdate();
+        }
+        else //(currentHp - m_damage < 0)
+        {
+            int realDamge = m_damage - currentShield;
+            TakeDamage(realDamge);
+            currentShield = 0;
+            theHealthUI.ShieldUpdate();
+        }
+       
+    }
+
     public void TakeDamage(int m_damage)
     {
         if (currentHp - m_damage > 0)
@@ -107,7 +128,7 @@ public class PlayerStatus : MonoBehaviour
         restartButton.gameObject.SetActive(true);
     }
 
-    public void GameEnd()
+    public void GameEnd() //수정가능성 높음
     {
         GameManager.isPlayerDead = true;
 
@@ -116,7 +137,6 @@ public class PlayerStatus : MonoBehaviour
 
         winUI.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
-
     }
  
 

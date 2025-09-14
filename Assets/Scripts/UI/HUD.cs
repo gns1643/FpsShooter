@@ -13,6 +13,10 @@ public class HUD : MonoBehaviour
     [SerializeField]
     private TMP_Text hp_Text;
 
+    //Shield 텍스트
+    [SerializeField]
+    private TMP_Text Shield_Text;
+
     //서브 무기들의 이미지와 슬롯 번호 텍스트
     [SerializeField]
     private GameObject[] theSubWeaponImage;
@@ -40,6 +44,12 @@ public class HUD : MonoBehaviour
     {
         hp_Text.text = thePlayerStatus.currentHp.ToString();
     }
+
+    public void ShieldUpdate()
+    {
+        Shield_Text.text = thePlayerStatus.currentShield.ToString();
+    }
+
 
     public void CheckBullet()
     {

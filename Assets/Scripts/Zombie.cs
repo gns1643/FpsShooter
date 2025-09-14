@@ -144,7 +144,7 @@ public class Zombie : MonoBehaviour
         {
             //플레이어가 죽지 않았으면 데미지를 준다.
             if (!GameManager.isPlayerDead)
-                playerStat.TakeDamage(zombieDamage);
+                playerStat.ShieldDamage(zombieDamage);
         }
         
     }
