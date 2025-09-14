@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - AmmoBox
   - AidKit
+  - Doll
   layers:
   - Default
   - TransparentFX

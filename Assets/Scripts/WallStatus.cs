@@ -14,14 +14,12 @@ public class WallStatus : MonoBehaviour
 
         if (currentHp - m_damage > 0)
         {
-            Debug.Log("º®°ø°Ý");
             currentHp -= m_damage;
         }
         else
         {
             currentHp = 0;
             Destroy(gameObject);
-            Debug.Log("º®»Ñ°³Áü");
         }
     }
 }

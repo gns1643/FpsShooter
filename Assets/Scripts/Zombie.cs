@@ -25,7 +25,11 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
     [SerializeField] private int money; //좀비가 죽으면 주는 돈
+    [SerializeField] private float dollDetectRange = 2.5f; // 좀비가 인형을 인식할 거리
     [SerializeField] private int zombieDamage;
+
+    private DollStatus targetDoll; // 공격 타겟이 인형일 때 저장
+    private DollStatus prevTargetDoll; // 이전 인형 타겟 저장
 
     [Header("좀비의 사운드")]
     [SerializeField] private AudioClip sound_zombie_attack;
@@ -68,9 +72,59 @@ public class Zombie : MonoBehaviour
         Debug.DrawRay(transform.position+ new Vector3(0f, 1.5f, 0f) , transform.forward * attackRange, Color.red);
 
         TryAttack();
-        FollowPlayer();
+        if (isDead)
+            return;
+        targetDoll = FindNearbyDoll();
+        if (targetDoll != prevTargetDoll)
+        {
+            // 이전 타겟이 존재했다면 currentHolders 감소
+            if (prevTargetDoll != null)
+                prevTargetDoll.currentHolders--;
+            // 새 타겟이 있다면 currentHolders 증가
+            if (targetDoll != null)
+                targetDoll.currentHolders++;
+            // prevTargetDoll 갱신
+            prevTargetDoll = targetDoll;
+        }
+        if (targetDoll == null)
+        {   //탐지되는 인형이 없다면
+            Debug.Log("Follow Player");
+            FollowPlayer();
+        }
+        else
+        {   //탐지되는 인형이 있다면
+            Debug.Log("Follow Doll");
+            FollowDoll();
+        }
     }
-  
+    DollStatus FindNearbyDoll()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, dollDetectRange);
+        foreach (var hit in hits)
+        {
+            // "Doll" 태그를 가진 오브젝트만 찾음
+            if (hit.CompareTag("Doll"))
+            {
+                DollStatus doll = hit.GetComponent<DollStatus>();
+                if (doll != null && doll.currentHp > 0 && doll.currentHolders < doll.enemyHoldLimit)
+                    return doll;
+            }
+        }
+        return null;
+    }
+
+    void FollowDoll()
+    {
+        float distToWall = Vector3.Distance(transform.position, targetDoll.transform.position);
+        if (distToWall <= attackRange)
+        {
+            nav.isStopped = true;
+        }
+        else
+        {
+            nav.SetDestination(targetDoll.transform.position);
+        }
+    }
 
     void FollowPlayer()
     {
@@ -91,7 +145,7 @@ public class Zombie : MonoBehaviour
         if(Physics.Raycast(transform.position + new Vector3(0f, 1.5f, 0f), transform.forward, out hit, attackRange))
         {
 
-            if (hit.transform.tag == "Wall" || hit.transform.tag == "Player")
+            if (hit.transform.tag == "Wall" || hit.transform.tag == "Player" || hit.transform.tag == "Doll")
             {
                 if(!isAttack)
                     isAttack = true;
@@ -124,6 +178,11 @@ public class Zombie : MonoBehaviour
         {
             hit.transform.GetComponent<WallStatus>().TakeDamage(zombieDamage);
         }
+        else if(hit.transform.tag == "Doll")
+        {
+            transform.LookAt(hit.transform.position);
+            hit.transform.GetComponent<DollStatus>().TakeDamage(zombieDamage);
+        }
         else if (hit.transform.tag == "Player")
         {
             //플레이어가 죽지 않았으면 데미지를 준다.
@@ -154,7 +213,7 @@ public class Zombie : MonoBehaviour
         this.pool = pool; 
     }
 
-    IEnumerator  Die()
+    IEnumerator Die()
     { // 좀비 사망시 호출
         isDead = true;
         zombieCollider.enabled = false;
@@ -163,6 +222,12 @@ public class Zombie : MonoBehaviour
         PlaySE(sound_zombie_Dead);
         anim.SetTrigger("Dead");
         GameManager.AddMoney(money);
+
+        if (targetDoll != null)
+        {
+            targetDoll.currentHolders--;
+            targetDoll = null;
+        }
 
         WaveManager.Instance.OnZombieKilled();
         WaveManager.Instance.PrintZombieCount(); //디버그용
