@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7075774952062736413}
   - component: {fileID: 7889266891528573205}
   - component: {fileID: 4364172394992799380}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Object_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2793875341345700230}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Scarecrow.obj.cleaner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3061483117782995381}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sketchfab_model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 538109056346248704}
   - component: {fileID: 2481982736369567313}
   - component: {fileID: 5616797660448719546}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Doll
   m_TagString: Doll
   m_Icon: {fileID: 0}

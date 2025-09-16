@@ -70,7 +70,6 @@ public class EnemySpawner : MonoBehaviour
 
     GameObject CreateZombie(int index)
     {
-        Debug.Log("½ÇÇà");
         var obj = Instantiate(zombiePrefab[index]);
         obj.SetActive(false);
 

@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waves:
-  - zombieCounts: 050000000100000000000000
+  - zombieCounts: 040000000100000000000000
   - zombieCounts: 0a0000000300000001000000
   - zombieCounts: 0f0000000500000002000000
   - zombieCounts: 140000000700000003000000
@@ -812,7 +812,7 @@ GameObject:
   m_Component:
   - component: {fileID: 99376357}
   - component: {fileID: 99376358}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2094,7 +2094,7 @@ GameObject:
   - component: {fileID: 223244245}
   - component: {fileID: 223244240}
   - component: {fileID: 223244247}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -3136,7 +3136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 397646565}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8906,7 +8906,7 @@ GameObject:
   - component: {fileID: 1075847016}
   - component: {fileID: 1075847015}
   - component: {fileID: 1075847018}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -11093,7 +11093,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1330086090}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15644,7 +15644,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1967622803}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16001,7 +16001,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1989181182
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17411,63 +17411,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 539080498}
   m_SourcePrefab: {fileID: 100100000, guid: f3338133fd931db4ba7f06f0add3b76c, type: 3}
---- !u!1001 &2657782713358758629
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.13
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5645962
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -17.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 538109056346248704, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6611114193056886695, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
-      propertyPath: m_Name
-      value: Doll
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 57b7b1775f75ce04884c27dc8cf11738, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -17488,4 +17431,3 @@ SceneRoots:
   - {fileID: 752163881}
   - {fileID: 1232406882}
   - {fileID: 1467255515}
-  - {fileID: 2657782713358758629}

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
+using static UnityEngine.GraphicsBuffer;
 
 public class Zombie : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class Zombie : MonoBehaviour
     [SerializeField] private int money; //좀비가 죽으면 주는 돈
     [SerializeField] private float dollDetectRange = 2.5f; // 좀비가 인형을 인식할 거리
     [SerializeField] private int zombieDamage;
+    [SerializeField] private float attackRadius = 0.8f;   // Overlap 캡슐 반경 
+    [SerializeField] private float attackLength = 0.9f;   // 전방 길이 [
+    [SerializeField] private LayerMask attackMask;         // 공격가능 레이어
 
     private DollStatus targetDoll; // 공격 타겟이 인형일 때 저장
     private DollStatus prevTargetDoll; // 이전 인형 타겟 저장
@@ -68,34 +72,24 @@ public class Zombie : MonoBehaviour
     {
         if(isDead)
             return;
-
-        Debug.DrawRay(transform.position+ new Vector3(0f, 1.5f, 0f) , transform.forward * attackRange, Color.red);
-
-        TryAttack();
-        if (isDead)
-            return;
+        
         targetDoll = FindNearbyDoll();
-        if (targetDoll != prevTargetDoll)
-        {
-            // 이전 타겟이 존재했다면 currentHolders 감소
-            if (prevTargetDoll != null)
-                prevTargetDoll.currentHolders--;
-            // 새 타겟이 있다면 currentHolders 증가
-            if (targetDoll != null)
-                targetDoll.currentHolders++;
-            // prevTargetDoll 갱신
-            prevTargetDoll = targetDoll;
-        }
+        //if (targetDoll != prevTargetDoll)
+        //{
+        //    // 이전 타겟이 존재했다면 currentHolders 감소
+        //    if (prevTargetDoll != null)
+        //        prevTargetDoll.currentHolders--;
+        //    // 새 타겟이 있다면 currentHolders 증가
+        //    if (targetDoll != null)
+        //        targetDoll.currentHolders++;
+        //    // prevTargetDoll 갱신
+        //    prevTargetDoll = targetDoll;
+        //}
         if (targetDoll == null)
-        {   //탐지되는 인형이 없다면
-            Debug.Log("Follow Player");
             FollowPlayer();
-        }
         else
-        {   //탐지되는 인형이 있다면
-            Debug.Log("Follow Doll");
             FollowDoll();
-        }
+        TryAttack();
     }
     DollStatus FindNearbyDoll()
     {
@@ -142,52 +136,60 @@ public class Zombie : MonoBehaviour
 
     private void TryAttack()
     {
-        if(Physics.Raycast(transform.position + new Vector3(0f, 1.5f, 0f), transform.forward, out hit, attackRange))
+        // 타깃 우선순위: Doll 있으면 Doll,  없으면 Player
+        Transform target = null;
+        if (targetDoll != null) target = targetDoll.transform;
+        else if (playerTransform != null) target = playerTransform;
+
+        if (target == null) return;
+
+        float dist = Vector3.Distance(transform.position, target.position);
+        if (dist <= attackRange)
         {
+            Debug.Log("공격쓰");
+            if (!isAttack) isAttack = true;
 
-            if (hit.transform.tag == "Wall" || hit.transform.tag == "Player" || hit.transform.tag == "Doll")
+            // 이동 정지 및 타겟 바라보기
+            if (nav) nav.isStopped = true;
+            Vector3 dir = target.position - transform.position;
+            dir.y = 0f;
+            if (dir.sqrMagnitude > 0.0001f)
+                transform.rotation = Quaternion.LookRotation(dir);
+
+            // 쿨타임 체크 후 애니메이션 트리거
+            if (Time.time >= lastAttackTime + attackCooldown)
             {
-                if(!isAttack)
-                    isAttack = true;
-
-                nav.isStopped = true;
-
-                if (Time.time >= lastAttackTime + attackCooldown)
-                {
-                    PlaySE(sound_zombie_attack);
-                    anim.SetTrigger("Attack");
-
-                    lastAttackTime = Time.time;
-                }
+                PlaySE(sound_zombie_attack);
+                anim.SetTrigger("Attack");
+                lastAttackTime = Time.time;
             }
-           
+        }
+        else
+        {
+            // 사정거리 밖이면 이동 재개
+            if (nav) nav.isStopped = false;
         }
 
     }
 
     public void Attack()
     {
-        //플레이어가 움직여 공격을 피한경우
-        if(hit.transform == null)
-        {
-            Debug.Log("공격이 빗나갔다");
-            return;
-        }
+        Vector3 start = transform.position + new Vector3(0f, 1.2f, 0f);
+        Vector3 end = start + transform.forward * attackLength;
 
-        if (hit.transform.tag == "Wall")
+        Collider[] hits = Physics.OverlapCapsule(start, end, attackRadius, attackMask);
+        if (hits == null || hits.Length == 0) return;
+
+        foreach(var c in hits)
         {
-            hit.transform.GetComponent<WallStatus>().TakeDamage(zombieDamage);
-        }
-        else if(hit.transform.tag == "Doll")
-        {
-            transform.LookAt(hit.transform.position);
-            hit.transform.GetComponent<DollStatus>().TakeDamage(zombieDamage);
-        }
-        else if (hit.transform.tag == "Player")
-        {
-            //플레이어가 죽지 않았으면 데미지를 준다.
-            if (!GameManager.isPlayerDead)
-                playerStat.TakeDamage(zombieDamage);
+            if (!c)
+                return;
+            if(c.CompareTag("Doll"))
+                c.transform.GetComponent<DollStatus>().TakeDamage(zombieDamage);
+            else if (c.CompareTag("Wall"))
+                c.transform.GetComponent<WallStatus>().TakeDamage(zombieDamage);
+            else if (c.CompareTag("Player"))
+                c.transform.GetComponent<PlayerStatus>().TakeDamage(zombieDamage);
         }
         
     }
@@ -196,6 +198,7 @@ public class Zombie : MonoBehaviour
     public void FinishAttack()
     {
         isAttack = false;
+        if (nav) nav.isStopped = false;
     }
 
     void Running()
@@ -233,14 +236,14 @@ public class Zombie : MonoBehaviour
         WaveManager.Instance.PrintZombieCount(); //디버그용
 
         yield return new WaitForSeconds(1.5f);
-        
+      
         pool.Release(gameObject);
     }
 
     public void decreaseHp(int m_damage)
     {
         if(currentHp - m_damage > 0)
-            currentHp = -m_damage;
+            currentHp -= m_damage;
         else
         {
             currentHp = 0;

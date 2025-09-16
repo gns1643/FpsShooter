@@ -1243,14 +1243,18 @@ MonoBehaviour:
   maxHp: 10
   currentHp: 0
   runSpeed: 5
-  walkSpeed: 2
   applySpeed: 0
   runRange: 5
-  attackRange: 1.2
+  attackRange: 2
   attackCooldown: 1
   money: 10
+  dollDetectRange: 2.5
   zombieDamage: 10
-  IsCopZombie: 0
+  attackRadius: 0.8
+  attackLength: 2
+  attackMask:
+    serializedVersion: 2
+    m_Bits: 64
   sound_zombie_attack: {fileID: 8300000, guid: 0e2a3c26154dfa76bb933a43a1362418, type: 3}
   sound_zombie_Dead: {fileID: 8300000, guid: 035629cc228c6d94e81a2ccd1a297aac, type: 3}
   sound_zombie_normal: {fileID: 8300000, guid: 134ec7590d08fc24bbd319c4132e337e, type: 3}
