@@ -1,0 +1,11 @@
+Model Information:
+* title:	Soviet AT Land Mine
+* source:	https://sketchfab.com/3d-models/soviet-at-land-mine-b087652da1b6446c856494df7804503c
+* author:	GameDev Nick (https://sketchfab.com/GameDevNick)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Soviet AT Land Mine" (https://sketchfab.com/3d-models/soviet-at-land-mine-b087652da1b6446c856494df7804503c) by GameDev Nick (https://sketchfab.com/GameDevNick) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -146,7 +146,6 @@ public class Zombie : MonoBehaviour
         float dist = Vector3.Distance(transform.position, target.position);
         if (dist <= attackRange)
         {
-            Debug.Log("공격쓰");
             if (!isAttack) isAttack = true;
 
             // 이동 정지 및 타겟 바라보기
