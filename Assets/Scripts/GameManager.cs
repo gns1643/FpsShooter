@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        SoundManager.instance.PlayBGM("CountDownStart");
         isPlayerDead = false;
         playerMoney = 0;
         Cursor.lockState = CursorLockMode.Locked;

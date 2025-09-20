@@ -88,4 +88,35 @@ public class SoundManager : MonoBehaviour
         }
         PlaySE(name); 
     }
+
+    public void PlayBGM(string name)
+    {
+        if (audioSourceBgm.isPlaying) audioSourceBgm.Stop(); // 기존 BGM 정지
+        for (int i = 0; i < bgmSound.Length; i++)
+        {
+            if (bgmSound[i].name == name)
+            {
+                audioSourceBgm.clip = bgmSound[i].clip;
+                audioSourceBgm.Play();             
+                return;
+            }
+        }
+        Debug.LogWarning($"{name} BGM이 등록되지 않음");
+    }
+
+    public void PauseBGM()
+    {
+        if (audioSourceBgm.isPlaying)
+            audioSourceBgm.Pause();
+    }
+
+    public void ResumeBGM()
+    {
+        audioSourceBgm.UnPause();                
+    }
+
+    public void StopBGM()
+    {
+        audioSourceBgm.Stop();                 
+    }
 }

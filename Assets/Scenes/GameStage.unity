@@ -10300,7 +10300,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1232406875
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10903,7 +10903,7 @@ MonoBehaviour:
   - {fileID: 1232406876}
   - {fileID: 1232406875}
   - {fileID: 1232406883}
-  audioSourceBgm: {fileID: 0}
+  audioSourceBgm: {fileID: 1232406880}
   playSoundName:
   - 
   - 
@@ -10941,9 +10941,13 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: d95bc57d46a79a2e9ad32883943a7edc, type: 3}
   - name: PlayerJump2
     clip: {fileID: 8300000, guid: 537152fffe826f65dac34bf793529bf8, type: 3}
+  - name: CountDownEnd
+    clip: {fileID: 8300000, guid: 13ba0608a7d8f334fb9752dddf10b53c, type: 3}
   bgmSound:
-  - name: 
-    clip: {fileID: 0}
+  - name: CountDownStart
+    clip: {fileID: 8300000, guid: 52de564d0145f32479ff2ff09f745358, type: 3}
+  - name: TitleScene
+    clip: {fileID: 8300000, guid: 0d4429adc9d90f145afadc7a033294c7, type: 3}
 --- !u!4 &1232406882
 Transform:
   m_ObjectHideFlags: 0

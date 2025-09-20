@@ -113,16 +113,23 @@ public class WaveManager : MonoBehaviour
         {
             countDownTMPText.gameObject.SetActive(true);
 
-            for (int i = WaveCountDown; i > 0; i--)
+            for (int i = WaveCountDown+2; i > 0; i--)
             {
-                if (i == WaveCountDown)
+                if (i == WaveCountDown + 2)
+                {
+                    SoundManager.instance.PlayBGM("CountDownStart");
                     countDownTMPText.text = "곧 다음 웨이브가 시작합니다.";
+                }
                 else if(i == 1)
                 {
+                    SoundManager.instance.PlaySE("CountDownEnd");
+                    SoundManager.instance.StopBGM();
                     countDownTMPText.text = "웨이브 시작!!";
                 }
                 else
-                    countDownTMPText.text = (i-1).ToString();
+                {
+                    countDownTMPText.text = (i - 1).ToString();
+                }
                 yield return new WaitForSeconds(1f);
             }
             countDownTMPText.gameObject.SetActive(false);
