@@ -77,6 +77,15 @@ public class SoundManager : MonoBehaviour
                 return;
             }
         }
-        Debug.Log("재생중인" + _name + "오디오 클립이 없음");
+    }
+
+    public void RestartSE(string name)
+    {// 같은 이름 재생 채널이 있으면 끊고 다시 재생
+        for (int i = 0; i < audioSourceEffects.Length; i++)
+        {
+            if (playSoundName[i] == name && audioSourceEffects[i].isPlaying)
+                audioSourceEffects[i].Stop();
+        }
+        PlaySE(name); 
     }
 }

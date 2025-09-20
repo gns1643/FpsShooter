@@ -158,7 +158,8 @@ public class Zombie : MonoBehaviour
             // 쿨타임 체크 후 애니메이션 트리거
             if (Time.time >= lastAttackTime + attackCooldown)
             {
-                PlaySE(sound_zombie_attack);
+                if(!GameManager.isPlayerDead) //플레이어가 살아 있을때만 공격 실행
+                    PlaySE(sound_zombie_attack);
                 anim.SetTrigger("Attack");
                 lastAttackTime = Time.time;
             }
@@ -173,6 +174,8 @@ public class Zombie : MonoBehaviour
 
     public void Attack()
     {
+        if (GameManager.isPlayerDead)
+            return;
         Vector3 start = transform.position + new Vector3(0f, 1.2f, 0f);
         Vector3 end = start + transform.forward * attackLength;
 

@@ -6,6 +6,14 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController theCharacterController;
 
+    [Header("발소리")]
+    [SerializeField] private string footstepName = "FootStep"; // SoundManager.effectSounds에 등록한 이름
+    [SerializeField] private float walkInterval = 0.5f;        // 걷기 간격
+    [SerializeField] private float runInterval = 0.33f;        // 달리기 간격
+    [SerializeField] private float minSpeedForStep = 0.1f;     // 임계 속도
+    private float stepTimer;
+
+    [Header("플레이어 이동")]
     public float walkSpeed;
     public float runSpeed;
     public float gravity = -9.81f;
@@ -42,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            int idx = Random.Range(0, 2);
+            string name = (idx == 1) ? "PlayerJump1" : "PlayerJump2";
+            SoundManager.instance?.PlaySE(name);
         }
 
         //중력
@@ -67,9 +78,30 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = transform.right * x + transform.forward * z;
 
         theCharacterController.Move(move * applySpeed * Time.deltaTime);
-      
-    }
 
+        //발소리 재생
+        PlayFootsteps();
+    }
+    private void PlayFootsteps()
+    {
+        Vector3 hv = theCharacterController.velocity; hv.y = 0f;
+        float speed = hv.magnitude; // 현재 이동 속도
+
+        if (!isGrounded || speed < minSpeedForStep)
+        {//공중이거나 속도가 임계속도보다 낮을경우 발소리 즉시 중지
+            SoundManager.instance?.StopSE(footstepName); 
+            return;
+        }
+
+        stepTimer -= Time.deltaTime;
+        float interval = isRun ? runInterval : walkInterval;
+
+        if (stepTimer <= 0f)
+        {
+            SoundManager.instance?.PlaySE(footstepName); // 재생
+            stepTimer = interval;
+        }
+    }
     // 달리기 실행
     private void Running()
     {

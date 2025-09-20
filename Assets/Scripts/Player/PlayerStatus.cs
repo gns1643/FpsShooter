@@ -35,12 +35,18 @@ public class PlayerStatus : MonoBehaviour
             if(!isBlood)
                 StartCoroutine(BloodyScreenEffect());
             currentHp -= m_damage;
+
+            int idx = Random.Range(0, 2); 
+            string name = (idx == 1) ? "PlayerTakeDamage1" : "PlayerTakeDamage2";
+            SoundManager.instance?.RestartSE(name);
+
+
             theHealthUI.HpUpdate();
         }
         else
         {
             GameManager.isPlayerDead = true;
-            currentHp = 0; 
+            currentHp = 0;
             theHealthUI.HpUpdate();
             PlayerDie();
         }
@@ -94,6 +100,7 @@ public class PlayerStatus : MonoBehaviour
         DeathAnimator.enabled = true;
 
         SoundManager.instance.StopAllSE();
+        SoundManager.instance?.PlaySE("PlayerScream");
 
         GetComponent<ScreenFader>().StartFade();
         StartCoroutine(ShowGameOverUI());
