@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - AmmoBox
   - AidKit
+  - Doll
   layers:
   - Default
   - TransparentFX
@@ -15,8 +16,8 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
+  - Attackable
+  - Enemy
   - 
   - 
   - 
