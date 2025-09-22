@@ -84,7 +84,7 @@ public class WaveManager : MonoBehaviour
         while (currentWave < waves.Length)
         {
             yield return StartCoroutine(CountdownRoutine());
-
+            UpdateWaveUI();
             Item.SetActive(false);
             currentEnemyCount.gameObject.SetActive(true);
 
