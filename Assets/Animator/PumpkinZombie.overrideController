@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PumpkinZombie
+  m_Controller: {fileID: 9100000, guid: 0443c0c0d33f78b4c8c4e6fde35612ca, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: fc9a62f9b1354f342bacfbbe077c503e, type: 2}
+    m_OverrideClip: {fileID: -203655887218126122, guid: 01e6b03a6ca505c40a13013b1b8fcafb, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: de559bbb071ebfd40ab5af80881e75e8, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 91119a2d09743ac499c8e6b0ccfe3c58, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 812aae90a9297f249908057eed4c0879, type: 2}
+    m_OverrideClip: {fileID: -203655887218126122, guid: 80357fb489db3674ba03b082c8f2c312, type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 37e6af8636979e04086967e3bd667606, type: 2}
+    m_OverrideClip: {fileID: -203655887218126122, guid: d24614a07cb292544aec70c53c50e2b4, type: 3}
