@@ -13,8 +13,7 @@ public class WeaponManager : MonoBehaviour
     public static Animator currentWeaponAnim;
 
     //현재 장착하고 있는 무기의 타입.
-    [SerializeField]
-    private string currentWeaponType;
+    public string currentWeaponType;
 
     //현재 장착중인 무기의 슬롯 번호
     public int currentWeaponSlot;
@@ -24,15 +23,17 @@ public class WeaponManager : MonoBehaviour
     private float changeWeaponDelayTime;
 
     //슬롯에 장착하고 있는 무기들.
-    public GameObject[] currentWeapons = new GameObject[2];
+    public GameObject[] currentWeapons = new GameObject[3];
 
     //무기 장착 슬롯들
     [SerializeField] 
-    private Transform[] weaponSlots = new Transform[2];
+    private Transform[] weaponSlots = new Transform[3];
 
     //필요한 컴포넌트.
     [SerializeField]
     private GunController theGunController;
+    [SerializeField]
+    private GrenadeController theGrenadeController;
     public GameObject examplePistol;
 
 
@@ -44,7 +45,7 @@ public class WeaponManager : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.isPlayerDead || GameManager.isPause)
+        if (GameManager.isPlayerDead)
             return;
 
         if (!isChangeWeapon)
@@ -57,13 +58,19 @@ public class WeaponManager : MonoBehaviour
             {
                 StartCoroutine(ChangeWeaponCoroutine(1));
             }
+            //수류탄 으로 변경_
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                StartCoroutine(ChangeWeaponCoroutine(2));
+            }
         }
     }
-    
+
     // 무기 교체 코루틴.
     public IEnumerator ChangeWeaponCoroutine(int slotIndex)
     {
-        Gun _gun = currentWeapons[slotIndex].GetComponent<Gun>();
+        GameObject weaponObj = currentWeapons[slotIndex];
+        // Gun _gun = currentWeapons[slotIndex].GetComponent<Gun>();
 
         isChangeWeapon = true;
         CancelPreWeaponAction();
@@ -74,12 +81,8 @@ public class WeaponManager : MonoBehaviour
 
         yield return new WaitForSeconds(changeWeaponDelayTime);
 
-        WeaponChange( _gun);
-
+        WeaponChange(weaponObj);
         currentWeaponSlot = slotIndex;
-        currentWeaponType = _gun.WeaponType;
-
-        GunController.isActivate = true;
         isChangeWeapon = false;
     }
 
@@ -92,16 +95,28 @@ public class WeaponManager : MonoBehaviour
                 theGunController.CancelReload();
                 GunController.isActivate = false;
                 break;
-
+            case "GRENADE":
+                GrenadeController.isActivate = false;
+                break;
         }
     }
 
     // 무기 교체 함수.
-    private void WeaponChange(Gun _gun)
+    private void WeaponChange(GameObject _weapon)
     {
-        if (_gun.WeaponType == "GUN")
-            theGunController.GunChange(_gun);
-       
+
+        if (_weapon.GetComponent<Gun>() != null)
+        {
+            currentWeaponType = "GUN";
+            theGunController.GunChange(_weapon.GetComponent<Gun>());
+            GunController.isActivate = true;
+        }
+        else
+        {
+            currentWeaponType = "GRENADE";
+            theGrenadeController.GrenadeChange(_weapon);
+            GrenadeController.isActivate = true;
+        }
     }
 
 
@@ -122,7 +137,8 @@ public class WeaponManager : MonoBehaviour
         // 새로운 무기 생성
         GameObject newWeapon = Instantiate(weaponPrefab, weaponSlots[slotIndex]);
         currentWeapons[slotIndex] = newWeapon;
-        WeaponChange(currentWeapons[slotIndex].GetComponent<Gun>());
+
+        WeaponChange(currentWeapons[slotIndex]);
 
         yield return new WaitForSeconds(1.06f);
 

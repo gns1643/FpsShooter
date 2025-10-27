@@ -44,7 +44,7 @@ public class BuildingTab : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.isPlayerDead || GameManager.isPause)
+        if (GameManager.isPlayerDead)
             return;
 
         if (Input.GetKeyDown(KeyCode.Tab) && !GameManager.isPreviewActivated)
@@ -53,6 +53,7 @@ public class BuildingTab : MonoBehaviour
         }
         if (GameManager.isPreviewActivated)
         {
+            GameManager.isOpenShopMenu = false;
             PreviewPositionUpdate();
             MouseScroll();
         }
@@ -122,7 +123,7 @@ public class BuildingTab : MonoBehaviour
             Range_Inditator.SetActive(false);
             Instantiate(go_Prefab, hitInfo.point, Quaternion.Euler(0, previewRotationY, 0));
             Destroy(go_Preview);
-            GameManager.isOpenShopMenu = false;
+            //GameManager.isOpenShopMenu = false;
             GameManager.isPreviewActivated = false;
             go_Preview = null;
             go_Prefab = null;
@@ -163,11 +164,11 @@ public class BuildingTab : MonoBehaviour
                 {
                     Range_Inditator.SetActive(true);
                     go_Preview = Instantiate(craft_slot[_slotNumber].go_PreviewPrefab, tf_Player_Cam.position + tf_Player_Cam.forward, Quaternion.identity);
+                    GameManager.isOpenShopMenu = false;
                     go_Prefab = craft_slot[_slotNumber].go_prefab;
                     GameManager.isPreviewActivated = true;
                     Base_UI.SetActive(false);
                     previewRotationY = 0f;
-                    //currentSlotNum = _slotNumber; // 현재 선택 슬롯 기억
                 }
 
                 return;

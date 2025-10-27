@@ -820,7 +820,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   maxHp: 30
   currentHp: 0
-  runSpeed: 8
+  runSpeed: 5.5
   applySpeed: 0
   runRange: 9
   attackRange: 2

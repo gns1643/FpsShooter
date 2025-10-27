@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -33,7 +33,6 @@ public class WaveManager : MonoBehaviour
 
     //필요 컴포넌트
     public PlayerStatus playerStatus;
-    public GameObject Item;
 
     private void Start()
     {
@@ -85,7 +84,7 @@ public class WaveManager : MonoBehaviour
         {
             yield return StartCoroutine(CountdownRoutine());
             UpdateWaveUI();
-            Item.SetActive(false);
+            
             currentEnemyCount.gameObject.SetActive(true);
 
             yield return StartCoroutine(SpawnWaveRoutine(waves[currentWave]));
@@ -94,7 +93,7 @@ public class WaveManager : MonoBehaviour
             yield return new WaitUntil(() => aliveZombieCount <= 0 && zombiesSpawnedCount == totalZombiesToSpawn);
 
             zombiesSpawnedCount = 0; //좀비 스폰 다시 시작할꺼니까 0으로 초기화  
-            Item.SetActive(true);
+           
             currentEnemyCount.gameObject.SetActive(false);
 
             currentWave++;
@@ -107,7 +106,7 @@ public class WaveManager : MonoBehaviour
 
     }
 
-    IEnumerator CountdownRoutine()
+    IEnumerator CountdownRoutine()//듀토리얼시 카운트다운 체크 첫 웨이브는 듀토리얼로 할꺼 예외 처리 해줘야할듯
     {
         if (countDownTMPText != null)
         {
@@ -147,8 +146,8 @@ public class WaveManager : MonoBehaviour
             waveTMPText.text = (currentWave+1) + "번째 웨이브";
     }
     void UnlockNextSpawner()
-    {// 3,6 웨이브에서 스포너 하나씩 증가
-        if (unlockedSpawnerCount < spawners.Length && (currentWave == 4 || currentWave == 7))
+    {// 2,4 웨이브에서 스포너 하나씩 증가
+        if (unlockedSpawnerCount < spawners.Length && (currentWave == 1 || currentWave == 3))
             unlockedSpawnerCount++;
     }
     public void OnZombieSpawned() { aliveZombieCount++; }

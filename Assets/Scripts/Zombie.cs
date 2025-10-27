@@ -40,7 +40,6 @@ public class Zombie : MonoBehaviour
     [SerializeField] private AudioClip sound_zombie_Dead;
     [SerializeField] private AudioClip sound_zombie_normal;
 
-    bool isRunning = false;
     bool isSlowDown;
     bool isAttack;
     float lastAttackTime = -1f;
@@ -141,10 +140,29 @@ public class Zombie : MonoBehaviour
         if (targetDoll != null) target = targetDoll.transform;
         else if (playerTransform != null) target = playerTransform;
 
+        //타겟이 플레이어 일때 벽을 감지하면 공격하도록 함
+        if (target == playerTransform)
+        {
+            RaycastHit hitInfo;
+            Vector3 start = transform.position + Vector3.up * 1.0f; // 좀비 눈높이
+            Vector3 direction = (playerTransform.position - start).normalized;
+            float dist = Vector3.Distance(start, playerTransform.position);
+
+            if (Physics.Raycast(start, direction, out hitInfo, dist, attackMask))
+            {
+                if (hitInfo.collider.CompareTag("Wall"))
+                {
+                    // 벽을 우선 타겟으로 설정
+                    target = hitInfo.collider.transform;
+                }
+            }
+        }
+
         if (target == null) return;
 
-        float dist = Vector3.Distance(transform.position, target.position);
-        if (dist <= attackRange)
+        float distToTarget = Vector3.Distance(transform.position, target.position);
+
+        if (distToTarget <= attackRange)
         {
             if (!isAttack) isAttack = true;
 
@@ -166,8 +184,12 @@ public class Zombie : MonoBehaviour
         }
         else
         {
+            //처음에 navmesh를 enemyspawner에서 껐다 키기 때문에 처음에 navmesh가 꺼져서 오류가나기때문에 이 예외상황을 막기위해 적음
+            if (nav.enabled == false)
+                return;
             // 사정거리 밖이면 이동 재개
-            if (nav) nav.isStopped = false;
+            if (nav) 
+                nav.isStopped = false;
         }
 
     }
@@ -191,7 +213,7 @@ public class Zombie : MonoBehaviour
             else if (c.CompareTag("Wall"))
                 c.transform.GetComponent<WallStatus>().TakeDamage(zombieDamage);
             else if (c.CompareTag("Player"))
-                c.transform.GetComponent<PlayerStatus>().TakeDamage(zombieDamage);
+                c.transform.GetComponent<PlayerStatus>().ShieldDamage(zombieDamage);
         }
         
     }
@@ -205,7 +227,6 @@ public class Zombie : MonoBehaviour
 
     void Running()
     {
-        isRunning = true;
         anim.SetBool("Running", true);
 
         nav.isStopped = false;

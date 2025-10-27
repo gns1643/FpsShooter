@@ -8,6 +8,10 @@ public class PlayerStatus : MonoBehaviour
     public int currentHp;
     public int maxHp = 100;
 
+
+    public int currentShield;
+    public int maxShield = 50;
+
     public GameObject bloodyScreen;
 
     public Animator DeathAnimator;
@@ -24,23 +28,36 @@ public class PlayerStatus : MonoBehaviour
     void Start()
     {
         currentHp = maxHp;
+        currentShield = maxShield;
         theHealthUI.HpUpdate();
+        theHealthUI.ShieldUpdate();
     }
-    
+
     //죽으면 데미지를 더이상 받지 않음
+    public void ShieldDamage(int m_damage)
+    {
+        if (currentShield - m_damage >= 0)
+        {
+            currentShield -= m_damage;
+            theHealthUI.ShieldUpdate();
+        }
+        else //(currentHp - m_damage < 0)
+        {
+            int realDamge = m_damage - currentShield;
+            TakeDamage(realDamge);
+            currentShield = 0;
+            theHealthUI.ShieldUpdate();
+        }
+
+    }
+
     public void TakeDamage(int m_damage)
     {
         if (currentHp - m_damage > 0)
         {
-            if(!isBlood)
+            if (!isBlood)
                 StartCoroutine(BloodyScreenEffect());
             currentHp -= m_damage;
-
-            int idx = Random.Range(0, 2); 
-            string name = (idx == 1) ? "PlayerTakeDamage1" : "PlayerTakeDamage2";
-            SoundManager.instance?.RestartSE(name);
-
-
             theHealthUI.HpUpdate();
         }
         else

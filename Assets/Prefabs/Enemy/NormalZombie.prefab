@@ -1242,7 +1242,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   maxHp: 10
   currentHp: 0
-  runSpeed: 5
+  runSpeed: 4.2
   applySpeed: 0
   runRange: 5
   attackRange: 2

@@ -30,9 +30,9 @@ public class GunController : MonoBehaviour
 
     void Update()
     {
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * currentGun.range, Color.red);
+       // Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * currentGun.range, Color.red);
 
-        if (GameManager.isOpenShopMenu || GameManager.isPreviewActivated || GameManager.isPlayerDead || GameManager.isPause)
+        if (GameManager.isOpenShopMenu || GameManager.isPreviewActivated || GameManager.isPlayerDead)
             { return; }
 
         if (isActivate)
@@ -84,7 +84,7 @@ public class GunController : MonoBehaviour
              RaycastHit hit;
              if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit, currentGun.range))
              { 
-                  Debug.Log(hit.transform.name);
+                 // Debug.Log(hit.transform.name);
 
                  if (hit.transform.tag == "Enemy")
                  {

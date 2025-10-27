@@ -5492,8 +5492,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponType: GUN
   WeaponName: shotgun
-  gunImage: {fileID: 0}
-  damage: 50
+  gunImage: {fileID: 21300012, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
+  damage: 30
   range: 10
   fireRate: 1.04
   reloadBulletCount: 5

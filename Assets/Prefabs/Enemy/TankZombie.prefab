@@ -1536,9 +1536,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 6040023868513314486}
   playerTransform: {fileID: 0}
-  maxHp: 100
+  maxHp: 120
   currentHp: 0
-  runSpeed: 6
+  runSpeed: 3.5
   applySpeed: 0
   runRange: 4
   attackRange: 2

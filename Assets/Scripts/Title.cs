@@ -40,6 +40,13 @@ public class Title : MonoBehaviour
         }
     }
 
+    public void ClickReStart(string sceneName)
+    {
+        SoundManager.instance.PlaySE("ButtonClick");
+        Debug.Log("·Îµù");
+        SceneManager.LoadScene(sceneName);
+    }
+
     public void ClickExit()
     {
         SoundManager.instance.PlaySE("ButtonClick");

@@ -9,6 +9,11 @@ public class Mine : MonoBehaviour
     [SerializeField] private LayerMask hitMask;        // 영향 받을 레이어
     [SerializeField] private GameObject vfxPrefab;     // 폭발 이펙트 프리팹
 
+    [Header("Audio Effects")]
+    [SerializeField] private AudioClip explosionSound;
+    [SerializeField] private Vector3 explosionParticleOffset = new Vector3(0, 1, 0);
+    [SerializeField] private GameObject audioSourcePrefab;
+
     private bool isExplode = false;
 
     private void OnTriggerEnter(Collider other)
@@ -19,7 +24,6 @@ public class Mine : MonoBehaviour
     }
     void Explode()
     {
-        Debug.Log("펑");
         isExplode = true;
         Vector3 center = transform.position;
 
@@ -27,14 +31,27 @@ public class Mine : MonoBehaviour
         foreach (var col in cols)
         {
             var zombie = col.GetComponentInParent<Zombie>();
-            Debug.Log(zombie);
+            //Debug.Log(zombie);
             if (zombie != null)
                 zombie.decreaseHp(damage);
         }
         if (vfxPrefab != null)
             Instantiate(vfxPrefab, center, Quaternion.identity);
+        PlaySoundAtPosition(explosionSound);
         Destroy(gameObject);
     }
+
+    void PlaySoundAtPosition(AudioClip clip)
+    {
+        GameObject audioSourceObject = Instantiate(audioSourcePrefab, transform.position + explosionParticleOffset, Quaternion.identity);
+        AudioSource instantiatedAudioSource = audioSourceObject.GetComponent<AudioSource>();
+        instantiatedAudioSource.clip = clip;
+        instantiatedAudioSource.spatialBlend = 1;
+        instantiatedAudioSource.Play();
+
+        Destroy(audioSourceObject, instantiatedAudioSource.clip.length);
+    }
+
 #if UNITY_EDITOR
     // 에디터에서 반경 가시화
     private void OnDrawGizmosSelected()

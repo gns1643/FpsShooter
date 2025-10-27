@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
+    [SerializeField] WeaponManager theWeaponManager;
     private CharacterController theCharacterController;
 
     [Header("발소리")]
@@ -33,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         theCharacterController = GetComponent<CharacterController>();
-        applySpeed = walkSpeed;
     }
 
     void Update()
@@ -60,6 +60,9 @@ public class PlayerMovement : MonoBehaviour
 
         //y축 움직임 적용
         theCharacterController.Move(velocity * Time.deltaTime);
+
+
+        applySpeed = walkSpeed;
 
         //달리기
         if (Input.GetKey(KeyCode.LeftShift))
@@ -106,7 +109,8 @@ public class PlayerMovement : MonoBehaviour
     private void Running()
     {
         isRun = true;
-        WeaponManager.currentWeaponAnim.SetBool("Run", true);
+        if (theWeaponManager.currentWeaponType == "GUN")
+            WeaponManager.currentWeaponAnim.SetBool("Run", true);
         applySpeed = runSpeed;
     }
 
@@ -114,7 +118,8 @@ public class PlayerMovement : MonoBehaviour
     // 달리기 취소
     private void RunningCancel()
     {
-        WeaponManager.currentWeaponAnim.SetBool("Run", false);
+        if (theWeaponManager.currentWeaponType == "GUN")
+            WeaponManager.currentWeaponAnim.SetBool("Run", false);
         isRun = false;
         applySpeed = walkSpeed;
     }

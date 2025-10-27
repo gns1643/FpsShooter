@@ -5580,7 +5580,7 @@ MonoBehaviour:
   WeaponType: GUN
   WeaponName: ak47
   gunImage: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
-  damage: 10
+  damage: 7
   range: 25
   fireRate: 0.08
   reloadBulletCount: 20
